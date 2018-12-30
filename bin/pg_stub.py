@@ -1,12 +1,21 @@
 #!/usr/bin/python
+
+#
+#  The purpose of this program is to demonstrate calling a python program 
+#  from a containerized Jenkins instance with the libraries completely encapsulated on the jenkins-data
+#  volume, without requiring a pip install on the source Jenkins installation
+#
+#
+#
+
 import sys,datetime
-# Install dependencies (e.g. Postgres) via
+# Install dependencies (e.g. Postgres) into the mounte volume via (e.g.)
 #    pip install --user pg8000
-#    mv ~/.local/* 
+#    mv ~/.local/* /home/ec2-user/CI/pg_stub_libraries
 #
 # Notes on the pg8000 library are here:
 #    https://github.com/tlocke/pg8000#interactive-example
-sys.path.append("/home/ec2-user/jenkins/pg_stub_libraries/lib/python2.7/site-packages/");
+sys.path.append("/home/ec2-user/CI/pg_stub_libraries/lib/python2.7/site-packages/");
 import pg8000
 
 

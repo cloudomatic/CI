@@ -1,1 +1,15 @@
-docker run -it --rm  --link pg01:postgres  --name jenkins01 -u 0 -v/home/ec2-user/jenkins:/home/ec2-user/jenkins openshift/jenkins-2-centos7 bash
+#!/bin/sh
+
+docker run -it --rm --name jenkins01 -d \
+                --expose 8443 \
+                --expose 8080 \
+                --env JENKINS_PASSWORD=0000 \
+                --env OPENSHIFT_ENABLE_OAUTH=false \
+               openshift/jenkins-2-centos7 
+
+docker logs -f jenkins01
+
+#  --link pg01:postgres \ -v/home/ec2-user/CI:/home/ec2-user/CI
+
+
+# docker exec -it -u 0 jenkins01 bash
