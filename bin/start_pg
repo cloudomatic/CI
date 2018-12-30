@@ -1,0 +1,37 @@
+#!/bin/sh
+
+
+start_pg_instance() {
+  if [ `docker --version | grep Docker | grep -i version | wc -c ` -lt 10 ]; then
+    echo "[`basename "$0"`]: start_pg_instance(): ERROR: Docker is not installed (exiting)"
+    exit 1
+  fi
+
+  if [ `docker ps -f name=pg01 | grep Up | wc -c` -gt 10 ]; then
+    echo "[`basename "$0"`]: start_pg_instance(): WARNING: Postgres is started (skipping)"
+    return
+  fi
+
+
+  # Start a postgres instance
+  if [ ! -r /home/ec2-user/pgdata ]; then
+    mkdir /home/ec2-user/pgdata
+  fi
+  chmod ugo+rwx -R /home/ec2-user
+  docker run -it --rm \
+           --name pg01 \
+           -e POSTGRES_PASSWORD=0000 \
+           -e PGDATA=/var/pgdata \
+           -e POSTGRES_DB=jpg01 \
+           -v /home/ec2-user/pgdata:/var/pgdata \
+           -d postgres
+}
+
+start_pg_instance
+
+
+# Load tables
+#docker run -it --rm --link pg01:postgres -e POSTGRES_PASSWORD=0000 postgres psql -h postgres -U postgres  -f ddl/jenkins.ddl
+docker run -it --rm --link pg01:postgres -e POSTGRES_PASSWORD=0000 postgres psql -h postgres -U postgres 
+
+#docker run --name jenkins --link pg01:postgres -d image cmd

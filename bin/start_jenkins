@@ -1,0 +1,1 @@
+docker run -it --rm  --link pg01:postgres  --name jenkins01 -u 0 -v/home/ec2-user/jenkins:/home/ec2-user/jenkins openshift/jenkins-2-centos7 bash
