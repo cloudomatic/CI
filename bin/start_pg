@@ -17,7 +17,8 @@ start_pg_instance() {
   if [ ! -r /home/ec2-user/pgdata ]; then
     mkdir /home/ec2-user/pgdata
   fi
-  chmod ugo+rwx -R /home/ec2-user
+  chmod ugo+rx /home/ec2-user
+  chmod ugo+rwx /home/ec2-user/pgdata
   docker run -it --rm \
            --name pg01 \
            -e POSTGRES_PASSWORD=0000 \
