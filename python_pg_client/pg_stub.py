@@ -15,7 +15,7 @@ import sys,datetime
 #
 # Notes on the pg8000 library are here:
 #    https://github.com/tlocke/pg8000#interactive-example
-sys.path.append("/home/ec2-user/CI/pg_stub_libraries/lib/python2.7/site-packages/");
+sys.path.append("/var/lib/jenkins/python_pg_client/lib/python2.7/site-packages/");
 import pg8000
 
 
