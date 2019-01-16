@@ -94,11 +94,11 @@ test_audit_events_database() {
 #
 launch_openshift_image() {
   # Build the current image if it's not in the local registry.
-  current_image_version=`grep version images/openshift/jenkins-master/Dockerfile | awk '{print $2} | sed 's/"//g'`
+  current_image_version=`grep version images/openshift/jenkins-master/Dockerfile | awk '{print $2}' | sed 's/"//g'`
   if [ `docker images | grep ci_jenkins | grep $current_image_version | wc -c` -lt 2 ]; then
-    echo build_openshift_image
+    build_openshift_image
   fi
-  exit 1
+
   # Create a directory mapping for the jenkins-data volume
   sudo mkdir /var/lib/jenkins 2>/dev/null && sudo chmod ugo+rwx /var/lib/jenkins
 
@@ -134,7 +134,7 @@ launch() {
   launch_openshift_image
 }
 
-connect() {
+jenkins_master_shell() {
   docker exec -it -u 0 jenkins01 bash
 }
 

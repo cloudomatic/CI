@@ -20,16 +20,26 @@
     </io.fabric8.jenkins.openshiftsync.BuildConfigProjectProperty>
   </properties>
   <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2.60">
-    <script>pipeline {
+    <script>import java.text.SimpleDateFormat
+
+pipeline {
     agent any
     stages {
         stage(&apos;validate&apos;) {
             steps {
+                script {
+                        def timestamp = new Date().format(&quot;yyyyMMdd.HHmm&quot;, TimeZone.getTimeZone(&apos;EST&apos;))
+                        println timestamp
+                        sh &quot;echo timestamp=$timestamp&quot;
+                }   
+
                 //def timestamp = sh (returnStdout: true, script: &apos;date&apos;)
                 //def timestamp=&quot;0&quot;
-                //println &quot;timestamp=&quot; + timestamp
-                //sh &quot;echo timestamp=$timestamp&quot;
-                sh &apos;PGPASSWORD=ciuser psql -h postgres_host -d audit -U ciuser -c &quot;select * from audit2_events&quot;&apos;
+                script {
+                  def timestamp = new Date().format(&quot;yyyyMMdd.HHmm&quot;, TimeZone.getTimeZone(&apos;EST&apos;))
+                  sh &quot;PGPASSWORD=ciuser psql -h postgres_host -d audit -U ciuser -c \&quot;INSERT INTO audit_events(event_datetime, event_name) VALUES (&apos;$timestamp&apos;, &apos;event01&apos;)\&quot;&quot;
+                  sh &apos;PGPASSWORD=ciuser psql -h postgres_host -d audit -U ciuser -c &quot;select * from audit_events&quot;&apos;
+                }
             }
         }
     }
