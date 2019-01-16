@@ -67,12 +67,26 @@ start_pg_instance() {
 # Create the audit event database in Postgres
 #
 create_audit_events_database() {
-  docker run -it --name posgres_cmd --rm --link pg01:postgres_host \
+  docker run -it --name postgres_cmd --rm --link pg01:postgres_host -v /home/ec2-user/CI:/ci \
+               -e PGPASSWORD=0000 \
+               postgres psql -h postgres_host -U postgres -f /ci/ddl/create_audit_database.ddl
+  docker run -it --name postgres_cmd --rm --link pg01:postgres_host -v /home/ec2-user/CI:/ci \
                -e PGPASSWORD=ciuser \
-               -v /home/ec2-user/CI:/ci \
-               postgres \
-               bash
-              # "psql -h postgres_host -U postgres -f /ci/ddl/audit_database.ddl"
+               postgres psql -h postgres_host --dbname=audit  -U ciuser -f /ci/ddl/create_audit_tables.ddl
+}
+
+#
+# Test the audit event database in Postgres
+#
+test_audit_events_database() {
+  echo "INSERT INTO audit_events (event_datetime, event_name) VALUES ('`date`', '`date '+%s'`');" >> ddl/tmp.sql
+  echo "INSERT INTO audit_events (event_datetime, event_name) VALUES ('`date`', '`date '+%s'`');" >> ddl/tmp.sql
+  echo "INSERT INTO audit_events (event_datetime, event_name) VALUES ('`date '+%s'`', '`date '+%s'`');" >> ddl/tmp.sql
+  docker run -it --name postgres_cmd --rm --link pg01:postgres_host -v /home/ec2-user/CI:/ci \
+               -e PGPASSWORD=ciuser postgres psql -h postgres_host --dbname=audit -U ciuser -f /ci/ddl/tmp.sql
+  rm ./ddl/tmp.sql
+  docker run -it --name postgres_cmd --rm --link pg01:postgres_host -v /home/ec2-user/CI:/ci \
+               -e PGPASSWORD=ciuser postgres psql -h postgres_host --dbname=audit -U ciuser -c "SELECT * FROM audit_events"
 }
 
 #
@@ -84,7 +98,7 @@ launch_openshift_image() {
   if [ `docker images | grep ci_jenkins | grep $current_image_version | wc -c` -lt 2 ]; then
     echo build_openshift_image
   fi
-
+  exit 1
   # Create a directory mapping for the jenkins-data volume
   sudo mkdir /var/lib/jenkins 2>/dev/null && sudo chmod ugo+rwx /var/lib/jenkins
 
