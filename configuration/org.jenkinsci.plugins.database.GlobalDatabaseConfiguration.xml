@@ -1,0 +1,11 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<org.jenkinsci.plugins.database.GlobalDatabaseConfiguration plugin="database@1.5">
+  <database class="org.jenkinsci.plugins.database.postgresql.PostgreSQLDatabase" plugin="database-postgresql@1.0">
+    <hostname>postgres_host</hostname>
+    <database>audit</database>
+    <username>ciuser</username>
+    <password>{AQAAABAAAAAQ7J7uYl6S43RbB1Dor0Qhv0EOrxO4S58gtEpVk9Ba6ZI=}</password>
+    <validationQuery>select count(*) from audit_events</validationQuery>
+    <properties></properties>
+  </database>
+</org.jenkinsci.plugins.database.GlobalDatabaseConfiguration>

@@ -39,7 +39,7 @@ pipeline {
                     //this.class.classLoader.rootLoader.addURL( new java.net.URL(&quot;file:///var/lib/jenkins/plugins/database-postgresql/WEB-INF/lib/postgresql-9.1-901-1.jdbc4.jar&quot;) ) 
                     //Class.forName(&quot;org.postgresql.Driver&quot;)
                     def sql = Sql.newInstance(&quot;jdbc:postgresql://postgres_host/audit&quot;, &quot;ciuser&quot;,&quot;ciuser&quot;, &quot;org.postgresql.Driver&quot;)
-                    sql.execute &quot;select count(*) from audit_events&quot;
+                    sql.execute &quot;INSERT INTO audit_events (event_datetime, event_uid, event_name) VALUES (&apos;001&apos;, &apos;002&apos;, &apos;003&apos;)&quot;
                  
                     
                     
