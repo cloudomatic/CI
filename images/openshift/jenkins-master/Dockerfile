@@ -8,4 +8,5 @@ RUN yum install -y postgresql
 
 USER 1001
 ADD configuration/jobs /opt/openshift/configuration/jobs
+ADD configuration/*.xml /opt/openshift/configuration/
 ADD python_pg_client /opt/openshift/configuration/python_pg_client
