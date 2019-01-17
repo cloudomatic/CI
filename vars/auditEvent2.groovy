@@ -1,7 +1,7 @@
 import groovy.sql.Sql
 
 def call(String event) {
-  //echo "Call pgsql here and log the event into the database"
+ echo "Call pgsql here and log the event into the database"
   //sh "psql -h postgres_host -U postgres SELECT * FROM audit_events;" 
  def timestamp = new Date().format("yyyyMMdd.HHmm", TimeZone.getTimeZone('EST'))
  def sql = Sql.newInstance("jdbc:postgresql://postgres_host/audit", "ciuser","ciuser", "org.postgresql.Driver")
