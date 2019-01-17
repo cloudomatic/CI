@@ -79,9 +79,9 @@ create_audit_events_database() {
 # Test the audit event database in Postgres
 #
 test_audit_events_database() {
-  echo "INSERT INTO audit_events (event_datetime, event_name) VALUES ('`date`', '`date '+%s'`');" >> ddl/tmp.sql
-  echo "INSERT INTO audit_events (event_datetime, event_name) VALUES ('`date`', '`date '+%s'`');" >> ddl/tmp.sql
-  echo "INSERT INTO audit_events (event_datetime, event_name) VALUES ('`date '+%s'`', '`date '+%s'`');" >> ddl/tmp.sql
+  echo "INSERT INTO audit_events (event_datetime, event_uid, event_name) VALUES ('`date`', '`whoami`', '`date '+%s'`');" >> ddl/tmp.sql
+  echo "INSERT INTO audit_events (event_datetime, event_uid, event_name) VALUES ('`date`', '`whoami`', '`date '+%s'`');" >> ddl/tmp.sql
+  echo "INSERT INTO audit_events (event_datetime, event_uid, event_name) VALUES ('`date '+%s'`', '`whoami`', '`date '+%s'`');" >> ddl/tmp.sql
   docker run -it --name postgres_cmd --rm --link pg01:postgres_host -v /home/ec2-user/CI:/ci \
                -e PGPASSWORD=ciuser postgres psql -h postgres_host --dbname=audit -U ciuser -f /ci/ddl/tmp.sql
   rm ./ddl/tmp.sql
