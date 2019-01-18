@@ -6,13 +6,11 @@
 #  Usage:
 #
 #         
-#         ci_ctl build && \
-#         ci_ctl launch
+#         ./bin/ci_ctl build && ci_ctl launch
 #
 #         And optionally start the Postgres database:
 #  
-#         ci_ctl start_pg_instance
-#         ci_ctl create_audit_events_table
+#         ci_ctl start_pg_instance && ci_ctl ci_ctl start_pg_instance
 #
 #  The purpose of this exercise is to launch a customized instance of Jenkins via Docker/Openshift.
 #  The openshift/jenkins:2 enables plugins and configuration files to be staged in /opt/openshift and
@@ -132,6 +130,10 @@ build() {
 
 launch() {
   launch_openshift_image
+}
+
+connect() {
+  docker exec -it -u 0 jenkins01 bash
 }
 
 jenkins_master_shell() {

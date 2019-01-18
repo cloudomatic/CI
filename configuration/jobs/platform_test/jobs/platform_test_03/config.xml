@@ -30,7 +30,7 @@ pipeline {
                 echo &apos;validating jdbc&apos;
                 script {
                     echo &apos;validating jdbc&apos;
-                    auditEvent2(&quot;This is a test&quot;)
+                    auditEvent(&quot;This is a test&quot;)
                 }
             }
             

@@ -20,62 +20,31 @@
     </io.fabric8.jenkins.openshiftsync.BuildConfigProjectProperty>
   </properties>
   <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2.60">
-    <script>import java.text.SimpleDateFormat
-import groovy.sql.Sql
-
-
+    <script>@Library(&apos;global-ci-library&apos;) _
 
 pipeline {
     agent any
-
-
     stages {
         stage(&apos;validate_jdbc&apos;) {
             steps {
                 echo &apos;validating jdbc&apos;
                 script {
                     echo &apos;validating jdbc&apos;
-                    //printClassPath this.class.classLoader
-                    //this.class.classLoader.rootLoader.addURL( new java.net.URL(&quot;file:///var/lib/jenkins/plugins/database-postgresql/WEB-INF/lib/postgresql-9.1-901-1.jdbc4.jar&quot;) ) 
-                    //Class.forName(&quot;org.postgresql.Driver&quot;)
-                    def sql = Sql.newInstance(&quot;jdbc:postgresql://postgres_host/audit&quot;, &quot;ciuser&quot;,&quot;ciuser&quot;, &quot;org.postgresql.Driver&quot;)
-                    sql.execute &quot;INSERT INTO audit_events (event_datetime, event_uid, event_name) VALUES (&apos;001&apos;, &apos;002&apos;, &apos;003&apos;)&quot;
-                 
-                    
-                    
+                    auditEvent(&quot;This is a test&quot;)
                 }
             }
             
         }
-        stage(&apos;validate_psql&apos;) {
+        stage(&apos;dump db&apos;) {
             steps {
                 script {
-                        def timestamp = new Date().format(&quot;yyyyMMdd.HHmm&quot;, TimeZone.getTimeZone(&apos;EST&apos;))
-                        println timestamp
-                        sh &quot;echo timestamp=$timestamp&quot;
-                }   
-
-                //def timestamp = sh (returnStdout: true, script: &apos;date&apos;)
-                //def timestamp=&quot;0&quot;
-                script {
-                  def timestamp = new Date().format(&quot;yyyyMMdd.HHmm&quot;, TimeZone.getTimeZone(&apos;EST&apos;))
-                  sh &quot;PGPASSWORD=ciuser psql -h postgres_host -d audit -U ciuser -c \&quot;INSERT INTO audit_events(event_datetime, event_name) VALUES (&apos;$timestamp&apos;, &apos;event01&apos;)\&quot;&quot;
-                  sh &apos;PGPASSWORD=ciuser psql -h postgres_host -d audit -U ciuser -c &quot;select * from audit_events&quot;&apos;
+                    sh &apos;PGPASSWORD=ciuser psql -h postgres_host -d audit -U ciuser -c &quot;select * from audit_events&quot;&apos;
                 }
-            }
+            }        
         }
     }
 }
-
-def printClassPath(classLoader) {
-  println &quot;$classLoader&quot;
-  classLoader.getURLs().each {
-      url-&gt;println &quot;- ${url.toString()}&quot;
-  }
-  if (classLoader.parent) {
-     printClassPath(classLoader.parent)
-  }
-}</script>
+</script>
     <sandbox>true</sandbox>
   </definition>
   <triggers/>
