@@ -9,7 +9,7 @@ def call(role) {
   def users = [:]
   def authStrategy = Jenkins.instance.getAuthorizationStrategy()
   if(authStrategy instanceof RoleBasedAuthorizationStrategy){
-    if def sids = authStrategy.roleMaps.globalRoles.getSidsForRole(role)
+    def sids = authStrategy.roleMaps.globalRoles.getSidsForRole(role)
     sids.each { sid ->
       users[sid] = Jenkins.instance.getUser(sid).fullName
       echo Jenkins.instance.getUser(sid).fullName
