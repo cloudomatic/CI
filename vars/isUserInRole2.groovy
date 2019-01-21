@@ -1,6 +1,6 @@
 import com.michelin.cio.hudson.plugins.rolestrategy.RoleBasedAuthorizationStrategy;
 
-def call() {
+def call(role) {
   def job = Jenkins.getInstance().getItemByFullName(env.JOB_BASE_NAME, Job.class)
   def build = job.getBuildByNumber(env.BUILD_ID as int)
   def userId = build.getCause(Cause.UserIdCause).getUserId()
@@ -9,10 +9,11 @@ def call() {
   def users = [:]
   def authStrategy = Jenkins.instance.getAuthorizationStrategy()
   if(authStrategy instanceof RoleBasedAuthorizationStrategy){
-    //if def sids = authStrategy.roleMaps.globalRoles.getSidsForRole(role)
-    //sids.each { sid ->
-    //  users[sid] = Jenkins.instance.getUser(sid).fullName
-    //}
+    if def sids = authStrategy.roleMaps.globalRoles.getSidsForRole(role)
+    sids.each { sid ->
+      users[sid] = Jenkins.instance.getUser(sid).fullName
+      echo Jenkins.instance.getUser(sid).fullName
+    }
   } else {
     throw new Exception("Error: Role Strategy Plugin not in use.")
   }
