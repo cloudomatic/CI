@@ -6,11 +6,20 @@ LABEL description="This is a customization of the Openshift Jenkins:2 image that
 LABEL maintainer="https://www.github.com/cloudomatic"
 
 USER 0
-#ADD war/jenkins.war /var/tmp/jenkins.war
-#RUN cd /var/tmp/ && unzip jenkins.war && zip -u /usr/lib/jenkins.war WEB-INF/lib/post.jar
+
+# Stage CA certificates for import into the Java JDK trust store
+COPY cacerts/ /root/
+
 ADD configuration/lib/postgresql-9.1-901-1.jdbc4.jar /usr/lib/jvm/java*x86_64/jre/lib/ext/postgresql-9.1-901-1.jdbc4.jar
-RUN yum install -y postgresql && \
-    chmod u+rwx,g+rwx,o+x /usr/lib/jvm/java*x86_64/jre/lib/ext/postgresql-9.1-901-1.jdbc4.jar 
+RUN echo "######################### Adding Postgres JDBC driver to the Java EXT path " && \
+    yum install -y postgresql && \
+    chmod u+rwx,g+rwx,o+x /usr/lib/jvm/java*x86_64/jre/lib/ext/postgresql-9.1-901-1.jdbc4.jar && \
+    echo "######################### Adding certs to Java truststore" && \
+    for certificate in `ls /root/*.cert`; do \
+         /etc/alternatives/keytool -import -noprompt -file $certificate -alias `basename $certificate` -keystore /etc/pki/ca-trust/extracted/java/cacerts -storepass changeit; \
+    done && \
+    /etc/alternatives/keytool -list -keystore /etc/pki/ca-trust/extracted/java/cacerts -storepass changeit | grep -i sant && \
+    echo ""
 
 USER 1001
 
